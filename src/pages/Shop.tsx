@@ -22,7 +22,7 @@ export function CartPage(){
         <section className="cart-page-content" aria-label="Produtos do pedido">
           {!hasItems?(
             <div className="cart-empty-state">
-              <div className="cart-empty-icon"><ShoppingBag size={64} strokeWidth={1.5}/><span><Heart className="black-symbol" size={28} fill="none" strokeWidth={2.1} aria-hidden="true"/></span></div>
+              <div className="cart-empty-icon"><ShoppingBag size={64} strokeWidth={1.5}/></div>
               <h2>Você ainda não adicionou nenhum açaí</h2>
               <p>Escolha seu tamanho, adicione seus complementos favoritos e prepare um pedido delicioso.</p>
               <Link to="/" className="btn">Explorar cardápio <ArrowRight size={18}/></Link>
