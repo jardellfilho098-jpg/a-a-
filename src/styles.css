@@ -75,3 +75,7 @@
 .hero h1 em{color:#ffe06a}
 .hero .btn-light{background:#ffd64a;color:#32163e}
 .hero .btn-light:hover{background:#ffe680}
+
+/* Indicação discreta para campos opcionais no painel */
+.field-optional{color:#aa9aad;font-size:11px;font-weight:500;margin-left:4px}
+.field-hint{color:#aa9aad;font-size:11px;font-weight:400}
