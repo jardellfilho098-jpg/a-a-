@@ -12,6 +12,7 @@ import {
   RefreshCw,
   Lock,
   ArrowLeft,
+  Grape,
 } from "lucide-react";
 import { supabase, configured } from "../lib/supabase";
 import {
@@ -318,7 +319,7 @@ export function Admin() {
     <div className="admin-layout">
       <aside className="admin-sidebar">
         <Link to="/" className="brand admin-brand">
-          <span>🫐</span>
+          <span className="admin-fruit-icon"><Grape className="black-symbol" size={23} aria-hidden="true"/></span>
           <b>
             Bora Açaí<span className="brand-dot">.</span>
           </b>
