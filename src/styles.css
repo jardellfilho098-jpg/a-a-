@@ -79,3 +79,16 @@
 /* Indicação discreta para campos opcionais no painel */
 .field-optional{color:#aa9aad;font-size:11px;font-weight:500;margin-left:4px}
 .field-hint{color:#aa9aad;font-size:11px;font-weight:400}
+
+
+/* Ranking visual dos produtos mais vendidos no painel administrativo */
+.popular{display:grid;gap:0}
+.popular-product{display:flex;align-items:center;gap:14px;padding:13px 5px;border-bottom:1px solid #f0e8f3}
+.popular-product:last-child{border-bottom:0}
+.popular-rank{font-family:Outfit,sans-serif;font-size:13px;color:#9c86a5;font-weight:800;width:24px;flex-shrink:0}
+.popular-product-image{width:64px;height:64px;object-fit:contain;border-radius:13px;background:#f7f0f9;border:1px solid #eee3f1;flex-shrink:0}
+.popular-product-info{min-width:0;display:grid;gap:5px;flex:1}
+.popular-product-info strong{color:#3d2049;font-size:14px;overflow-wrap:anywhere}
+.popular-product-info small{font-size:12px;color:#957c9f}
+.popular-product-qty{color:#542069;font-size:18px;font-family:Outfit,sans-serif}
+@media(max-width:640px){.popular-product{gap:10px}.popular-product-image{width:54px;height:54px}.popular-rank{width:20px}}
