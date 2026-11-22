@@ -288,17 +288,24 @@ export function Admin() {
   const revenue = dayOrders
     .filter((o) => o.status === "concluido")
     .reduce((s, o) => s + o.total_cents, 0);
-  const popular = Object.entries(
-    orders
-      .filter((o) => o.status === "concluido")
-      .flatMap((o) => o.items || [])
-      .reduce<Record<string, number>>((acc, item) => {
-        acc[item.name] = (acc[item.name] || 0) + item.qty;
-        return acc;
-      }, {}),
-  )
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 5);
+  const popularTotals = orders
+    .filter((o) => o.status === "concluido")
+    .flatMap((o) => o.items || [])
+    .reduce<Map<string, { id: string | null; name: string; qty: number }>>((acc, item) => {
+      const key = item.product_id || `nome:${item.name}`;
+      const existing = acc.get(key);
+      if (existing) existing.qty += item.qty;
+      else acc.set(key, { id: item.product_id, name: item.name, qty: item.qty });
+      return acc;
+    }, new Map());
+  const popular = [...popularTotals.values()]
+    .sort((a, b) => b.qty - a.qty)
+    .slice(0, 5)
+    .map((item) => {
+      const product = products.find((p) => p.id === item.id) ||
+        products.find((p) => p.name === item.name);
+      return { ...item, image: product?.image_url || "/images/acai-300.png" };
+    });
   const logout = async () => {
     await supabase?.auth.signOut();
     nav("/");
@@ -417,10 +424,15 @@ export function Admin() {
               <h3>Produtos mais vendidos</h3>
               {popular.length ? (
                 <div className="popular">
-                  {popular.map(([name, qty]) => (
-                    <div key={name} className="summary-line">
-                      <span>{name}</span>
-                      <strong>{qty} unidades</strong>
+                  {popular.map((item, index) => (
+                    <div key={item.id || item.name} className="popular-product">
+                      <span className="popular-rank">{String(index + 1).padStart(2, "0")}</span>
+                      <img src={item.image} alt={item.name} className="popular-product-image" loading="lazy"/>
+                      <div className="popular-product-info">
+                        <strong>{item.name}</strong>
+                        <small>{item.qty} {item.qty === 1 ? "unidade vendida" : "unidades vendidas"}</small>
+                      </div>
+                      <strong className="popular-product-qty">{item.qty}×</strong>
                     </div>
                   ))}
                 </div>
