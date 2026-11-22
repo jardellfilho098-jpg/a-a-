@@ -92,3 +92,55 @@
 .popular-product-info small{font-size:12px;color:#957c9f}
 .popular-product-qty{color:#542069;font-size:18px;font-family:Outfit,sans-serif}
 @media(max-width:640px){.popular-product{gap:10px}.popular-product-image{width:54px;height:54px}.popular-rank{width:20px}}
+
+
+/* Página de acompanhamento dos pedidos dos clientes */
+.customer-header-actions{display:flex;align-items:center;gap:12px;margin-left:auto}
+.my-orders-link{display:inline-flex;align-items:center;gap:8px;color:#4b195c;font-weight:800;font-size:13px;padding:11px 13px;border-radius:12px;white-space:nowrap}
+.my-orders-link:hover{background:#f3eaf7}
+.track-page{padding-top:50px;padding-bottom:85px;min-height:70vh}
+.track-head{margin-bottom:30px}
+.track-head .overline{color:#805393}
+.track-head h1{font-size:clamp(30px,3.8vw,42px);letter-spacing:-1px;margin:8px 0 10px}
+.track-head p{color:#8c7796;font-size:14px;line-height:1.6;margin:0}
+.track-layout{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:24px;align-items:start}
+.track-main-card,.track-side,.track-list{background:white;border:1px solid #efe5f2;border-radius:20px;padding:29px;box-shadow:0 8px 30px #4820510b}
+.track-order-header{display:flex;align-items:start;justify-content:space-between;gap:15px;border-bottom:1px solid #f1e9f4;padding-bottom:23px}
+.track-order-header .overline{font-size:11px;color:#8f6c9d}
+.track-order-header h2{font-size:25px;margin:10px 0 0}
+.track-order-header button{flex-shrink:0}
+.track-timeline{padding:26px 0 5px;list-style:none;margin:0}
+.track-step{display:flex;gap:17px;position:relative;padding:0 0 28px;color:#ac9ab5}
+.track-step:last-child{padding-bottom:0}
+.track-step:not(:last-child):before{content:'';position:absolute;left:11px;top:29px;bottom:4px;width:2px;background:#ede5f1}
+.track-step.done:not(:last-child):before{background:#633075}
+.track-step-mark{width:24px;flex-shrink:0;z-index:1;display:grid;place-items:start center;background:white}
+.track-step.done .track-step-mark{color:#54236a}
+.track-step-copy strong{font-size:16px;color:#9c8ba5;display:block;margin-bottom:5px}
+.track-step.done .track-step-copy strong{color:#3f234d}
+.track-step-copy p{font-size:13px;line-height:1.6;margin:0;color:#9c89a5}
+.track-step.current .track-step-copy strong{color:#5b216e}
+.track-step.current .track-step-mark{color:#633075}
+.track-side{padding:24px}
+.track-side-icon{width:52px;height:52px;border-radius:14px;background:#f0e6f5;color:#4a175d;display:grid;place-items:center;margin-bottom:17px}
+.track-side h3{font-size:19px}
+.track-side p{font-size:13px;color:#8f7c99;line-height:1.7}
+.track-privacy{display:flex;gap:8px;align-items:flex-start;color:#92819a;font-size:12px;line-height:1.6;margin-top:18px}
+.track-privacy svg{flex-shrink:0;margin-top:1px}
+.track-loading{display:flex;gap:12px;align-items:center;padding:40px 10px;color:#836e90}
+.track-canceled{display:flex;gap:13px;background:#fff1f2;color:#9d3b51;padding:20px;border-radius:13px;margin-top:23px}
+.track-canceled p{font-size:13px;margin:5px 0 0;line-height:1.6}
+.track-list{max-width:740px;padding:8px 24px}
+.track-list-item{display:flex;align-items:center;gap:16px;padding:19px 5px;border-bottom:1px solid #f0e8f3}
+.track-list-item:last-of-type{border-bottom:0}
+.track-list-item:hover .track-list-info strong{color:#673281}
+.track-list-icon{width:48px;height:48px;background:#f5ecf8;color:#522069;border-radius:13px;display:grid;place-items:center;flex-shrink:0}
+.track-list-info{display:grid;gap:5px;flex:1}
+.track-list-info strong{font-size:16px}
+.track-list-info small{color:#99849f;font-size:12px}
+.track-list-item>svg{color:#795c86}
+.track-empty{display:flex;flex-direction:column;align-items:center;text-align:center;padding:62px 15px 55px;color:#9f8aa7}
+.track-empty h2{color:#41234e;font-size:22px;margin:18px 0 10px}
+.track-empty p{max-width:410px;font-size:14px;line-height:1.7;margin:0 0 23px}
+@media(max-width:800px){.track-layout{grid-template-columns:1fr}.track-side{position:static}}
+@media(max-width:640px){.customer-header-actions{gap:6px}.my-orders-link{padding:9px 7px;font-size:12px}.my-orders-link span{display:none}.my-orders-link svg{width:21px;height:21px}.header-title{font-size:15px;max-width:42%;text-align:center}.track-page{padding-top:24px;padding-bottom:55px}.track-head{margin-bottom:20px}.track-main-card,.track-side,.track-list{padding:21px;border-radius:16px}.track-list{padding:6px 15px}.track-order-header{align-items:start;gap:10px}.track-order-header h2{font-size:21px}.track-order-header .btn-outline{padding:9px;font-size:11px}.track-step{gap:13px}.track-step-copy strong{font-size:14px}}
