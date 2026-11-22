@@ -957,7 +957,7 @@ function SettingsPanel({
     void run(async () => {
       const { error } = await supabase!
         .from("store_settings")
-        .update({ ...s, whatsapp: s.whatsapp.replace(/\D/g, "") })
+        .update({ ...s, whatsapp: (() => { const digits = s.whatsapp.replace(/\D/g, ""); return /^\d{10,11}$/.test(digits) ? `55${digits}` : digits; })() })
         .eq("id", 1);
       return { error };
     });
