@@ -68,3 +68,10 @@
 .admin-fruit-icon{width:34px;height:34px;display:inline-grid;place-items:center;border-radius:9px;background:#fff}
 .cart-empty-icon>span{display:grid;place-items:center;right:8px;bottom:6px;width:36px;height:36px;border-radius:50%;background:#fff}
 .page-title>span{display:inline-flex;vertical-align:middle;align-items:center}
+
+
+/* Teste de paleta: amarelo no lugar do verde da página inicial */
+.hero .eyebrow{color:#ffd64a}
+.hero h1 em{color:#ffe06a}
+.hero .btn-light{background:#ffd64a;color:#32163e}
+.hero .btn-light:hover{background:#ffe680}
