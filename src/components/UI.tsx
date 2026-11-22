@@ -1,4 +1,4 @@
-import { ArrowLeft, ShoppingBag, Leaf, CupSoda } from "lucide-react";
+import { ArrowLeft, ShoppingBag, Leaf, CupSoda, ClipboardList } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useStore } from "../context/Store";
 export function Header({ back, title }: { back?: boolean; title?: string }) {
@@ -30,6 +30,8 @@ export function Header({ back, title }: { back?: boolean; title?: string }) {
           </Link>
         )}
         {title && <strong className="header-title">{title}</strong>}
+        <div className="customer-header-actions">
+          <Link className="my-orders-link" to="/acompanhar" aria-label="Meus pedidos"><ClipboardList size={18}/><span>Meus pedidos</span></Link>
         <Link className="cart-link" to="/carrinho" aria-label="Ver carrinho">
           <ShoppingBag size={22} />
           {cart.length > 0 && (
@@ -38,6 +40,8 @@ export function Header({ back, title }: { back?: boolean; title?: string }) {
             </span>
           )}
         </Link>
+        </div>
+
       </div>
       {demo && (
         <div className="demo-ribbon">
