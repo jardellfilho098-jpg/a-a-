@@ -1,4 +1,4 @@
-import { ArrowLeft, ShoppingBag, Leaf } from "lucide-react";
+import { ArrowLeft, ShoppingBag, Leaf, Heart, CupSoda } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useStore } from "../context/Store";
 export function Header({ back, title }: { back?: boolean; title?: string }) {
@@ -51,7 +51,7 @@ export function Footer() {
   return (
     <footer className="footer">
       <div className="container footer-inner">
-        <span>💜 Bora Açaí — feito com carinho.</span>
+        <span className="footer-heart"><Heart className="black-symbol" size={16} fill="currentColor" aria-hidden="true"/> Bora Açaí — feito com carinho.</span>
         <Link to="/admin/login">Área administrativa</Link>
       </div>
     </footer>
@@ -60,7 +60,7 @@ export function Footer() {
 export function Empty({ title, text }: { title: string; text: string }) {
   return (
     <div className="empty">
-      <div className="empty-emoji">🥤</div>
+      <div className="empty-emoji"><CupSoda className="black-symbol" size={46} aria-hidden="true"/></div>
       <h3>{title}</h3>
       <p>{text}</p>
     </div>
