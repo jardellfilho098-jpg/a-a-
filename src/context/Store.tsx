@@ -1,0 +1,13 @@
+import {createContext,useContext,useEffect,useState,useCallback,type ReactNode} from 'react';
+import {itemTotal} from '../lib/pricing';
+import {supabase,configured} from '../lib/supabase';
+import {fallbackSettings,sampleProducts,sampleExtras,type CartItem,type Product,type Extra,type Settings} from '../lib/types';
+type Store={products:Product[];extras:Extra[];settings:Settings;cart:CartItem[];loading:boolean;demo:boolean;add:(item:CartItem)=>void;remove:(key:string)=>void;updateQty:(key:string,qty:number)=>void;clear:()=>void;reload:()=>Promise<void>};
+const C=createContext<Store|null>(null);const getCart=():CartItem[]=>{try{return JSON.parse(localStorage.getItem('bora-cart')||'[]')}catch{return []}};
+export function StoreProvider({children}:{children:ReactNode}){const [products,setProducts]=useState<Product[]>(configured?[]:sampleProducts);const [extras,setExtras]=useState<Extra[]>(configured?[]:sampleExtras);const [settings,setSettings]=useState<Settings>(fallbackSettings);const [cart,setCart]=useState<CartItem[]>(getCart);const [loading,setLoading]=useState(configured);
+const reload=useCallback(async()=>{if(!supabase)return;setLoading(true);try{const [p,e,s]=await Promise.all([supabase.from('products').select('*,sizes(*)').eq('available',true).order('name'),supabase.from('extras').select('*').eq('available',true).order('name'),supabase.from('store_settings').select('id,name,whatsapp,logo_url,delivery_fee_cents,pickup_enabled,delivery_enabled,open_for_orders,closed_message,address,neighborhoods,payments').eq('id',1).single()]);if(p.error)throw p.error;if(e.error)throw e.error;setProducts((p.data||[]) as Product[]);setExtras((e.data||[]) as Extra[]);if(s.data)setSettings(s.data as Settings)}catch(e){console.error('Falha ao carregar cardápio',e);setProducts([]);setExtras([])}finally{setLoading(false)}},[]);
+useEffect(()=>{void reload()},[reload]);useEffect(()=>{localStorage.setItem('bora-cart',JSON.stringify(cart))},[cart]);
+const add=(item:CartItem)=>setCart(c=>{const found=c.find(x=>x.key===item.key);return found?c.map(x=>x.key===item.key?{...x,qty:x.qty+item.qty}:x):[...c,item]});const remove=(key:string)=>setCart(c=>c.filter(x=>x.key!==key));const updateQty=(key:string,qty:number)=>setCart(c=>qty<=0?c.filter(x=>x.key!==key):c.map(x=>x.key===key?{...x,qty:Math.min(qty,99)}:x));const clear=()=>setCart([]);
+return <C.Provider value={{products,extras,settings,cart,loading,demo:!configured,add,remove,updateQty,clear,reload}}>{children}</C.Provider>}
+export const useStore=()=>{const s=useContext(C);if(!s)throw Error('StoreProvider ausente');return s};
+export const calcItem=(item:CartItem)=>itemTotal(item);
