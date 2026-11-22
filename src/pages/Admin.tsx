@@ -1006,7 +1006,7 @@ function SettingsPanel({
           />
         </label>
         <label>
-          Bairros atendidos (separados por vírgula)
+          Bairros atendidos <span className="field-optional">(Opcional)</span> <span className="field-hint">— separados por vírgula</span>
           <input
             value={s.neighborhoods.join(", ")}
             onChange={(e) =>
