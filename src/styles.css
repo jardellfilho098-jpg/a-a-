@@ -57,3 +57,14 @@
 .cart-continue-shopping{width:max-content;margin-top:11px}
 @media(max-width:850px){.cart-page-grid{grid-template-columns:minmax(0,1fr) 315px;gap:22px}.cart-empty-state{min-height:420px}.cart-total-card{padding:22px 18px}}
 @media(max-width:700px){.cart-page{padding-top:23px;padding-bottom:60px}.cart-page-heading{align-items:start;margin-bottom:18px}.cart-page-heading h1{font-size:31px}.cart-page-heading .text-link{display:none}.cart-page-grid{grid-template-columns:1fr;gap:17px}.cart-page-side{position:static}.cart-empty-state{min-height:325px;padding:20px 16px 26px}.cart-empty-icon{width:112px;height:112px;border-radius:26px;margin-bottom:20px}.cart-empty-icon:before{inset:11px;border-radius:21px}.cart-empty-icon svg{width:49px;height:49px}.cart-empty-icon>span{font-size:24px}.cart-empty-state h2{font-size:20px}.cart-empty-state p{font-size:13px}.cart-offers{min-height:70px}.cart-total-card{padding:23px}.cart-page-item>img{width:92px;height:115px}.cart-item-title{display:block}.cart-item-title strong{display:block;margin:0 0 8px}.cart-page-item .cart-actions{margin-top:10px}}
+
+
+/* Ícones monocromáticos: substituem os emojis sem alterar a identidade do site */
+.black-symbol{color:#111111!important;stroke:#111111!important;flex-shrink:0;vertical-align:middle}
+.eyebrow .black-symbol{margin-left:6px}
+.info-strip>span{display:inline-flex;align-items:center;gap:9px}
+.footer-heart{display:inline-flex;align-items:center;gap:8px}
+.empty-emoji{display:flex;justify-content:center;align-items:center;min-height:52px}
+.admin-fruit-icon{width:34px;height:34px;display:inline-grid;place-items:center;border-radius:9px;background:#fff}
+.cart-empty-icon>span{display:grid;place-items:center;right:8px;bottom:6px;width:36px;height:36px;border-radius:50%;background:#fff}
+.page-title>span{display:inline-flex;vertical-align:middle;align-items:center}
