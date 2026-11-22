@@ -1,8 +1,84 @@
-import{useState,useMemo,useRef,useEffect}from'react';import{Link,useNavigate,useParams}from'react-router-dom';import{ArrowRight,ArrowLeft,Minus,Plus,Trash2,MapPin,CheckCircle2,MessageCircle,Search,Truck,Store,Wallet}from'lucide-react';import{useStore,calcItem}from'../context/Store';import{Header,Footer,Empty}from'../components/UI';import{money}from'../lib/types';import{supabase}from'../lib/supabase';
+import{useState,useMemo,useRef,useEffect}from'react';import{Link,useNavigate,useParams}from'react-router-dom';import{ArrowRight,ArrowLeft,Minus,Plus,Trash2,MapPin,CheckCircle2,MessageCircle,Search,Truck,Store,Wallet,ShoppingBag}from'lucide-react';import{useStore,calcItem}from'../context/Store';import{Header,Footer,Empty}from'../components/UI';import{money}from'../lib/types';import{supabase}from'../lib/supabase';
 // NOTE: import is named below; unused alternative removed by script.
 export function Home(){const {products,loading}=useStore();const [filter,setFilter]=useState('Todos');const [query,setQuery]=useState('');const groups=['Todos',...new Set(products.map(x=>x.category))];const shown=products.filter(p=>(filter==='Todos'||p.category===filter)&&`${p.name} ${p.description}`.toLowerCase().includes(query.toLowerCase()));return <><Header/><main className="container page"><section className="hero"><div className="hero-copy"><span className="eyebrow">AÇAÍ FEITO PRA VOCÊ 💜</span><h1>Seu momento mais <em>gostoso</em> começa aqui.</h1><p>Escolha o tamanho, capriche nos adicionais e monte um açaí que é a sua cara.</p><a className="btn btn-light" href="#cardapio">Explorar cardápio <ArrowRight size={18}/></a></div><img src="/images/acai-promo.png" alt="Açaí especial com frutas" className="hero-image"/></section><div className="section-intro" id="cardapio"><div><span className="overline">ESCOLHA SEU FAVORITO</span><h2>O que vai pedir hoje?</h2><p>Tem açaí para todos os gostos.</p></div><div className="search"><Search size={18}/><input aria-label="Buscar açaí" placeholder="Buscar no cardápio..." value={query} onChange={e=>setQuery(e.target.value)}/></div></div><div className="categories">{groups.map(g=><button key={g} className={'chip '+(filter===g?'selected':'')} onClick={()=>setFilter(g)}>{g}</button>)}</div>{loading?<p>Carregando cardápio...</p>:shown.length?<div className="products">{shown.map(p=><Link to={'/produto/'+p.id} className="product-card" key={p.id}><div className="product-photo"><img src={p.image_url||'/images/acai-300.png'} alt={p.name}/></div><div className="product-info"><span className="product-tag">{p.category}</span><h3>{p.name}</h3><p>{p.description}</p><div className="product-bottom"><div><small>A partir de</small><strong>{money(Math.min(...p.sizes.filter(s=>s.available).map(s=>s.price_cents)))}</strong></div><span className="round-action"><Plus size={22}/></span></div></div></Link>)}</div>:<Empty title="Nenhum açaí disponível" text="Experimente outro filtro ou volte mais tarde."/>}<section className="info-strip"><span>🚀 Pedido rápido pelo WhatsApp</span><span>🥣 Açaí do jeitinho que você gosta</span><span>💜 Feito com carinho</span></section></main><Footer/></>}
 export function Customize(){const {id}=useParams();const {products,extras,add}=useStore();const nav=useNavigate();const product=products.find(p=>p.id===id);const [sizeId,setSizeId]=useState<string>('');const [selected,setSelected]=useState<string[]>([]);const [qty,setQty]=useState(1);if(!product)return <><Header back title="Personalizar"/><main className="container page"><Empty title="Produto indisponível" text="Não encontramos este açaí."/><Link className="btn" to="/">Ver cardápio</Link></main></>;const sizes=product.sizes.filter(s=>s.available);const size=sizes.find(s=>s.id===sizeId)||sizes[0];const chosen=extras.filter(e=>selected.includes(e.id));const price=((size?.price_cents||0)+chosen.reduce((s,x)=>s+x.price_cents,0))*qty;const toggle=(id:string)=>setSelected(c=>c.includes(id)?c.filter(x=>x!==id):c.length<product.max_extras?[...c,id]:c);const submit=()=>{if(!size)return;const ids=[...selected].sort();const key=`${product.id}-${size.id}-${ids.join('.')}`;add({key,product_id:product.id,name:product.name,image_url:product.image_url,size_id:size.id,size_name:size.name,price_cents:size.price_cents,extras:chosen,qty});nav('/carrinho')};return <><Header back title="Monte seu açaí"/><main className="container page"><div className="custom-layout"><div className="custom-photo"><img src={product.image_url||'/images/acai-500.png'} alt={product.name}/></div><div className="custom-content"><span className="overline">DO SEU JEITINHO</span><h1>{product.name}</h1><p>{product.description}</p><div className="form-section"><h3>Escolha o tamanho</h3><div className="size-options">{sizes.map(s=><button key={s.id} className={'size-tile '+(size?.id===s.id?'active':'')} onClick={()=>setSizeId(s.id)}><strong>{s.name}</strong><span>{money(s.price_cents)}</span></button>)}</div></div><div className="form-section"><h3>Adicionais <small>até {product.max_extras} opções</small></h3><div className="extra-list">{extras.filter(x=>x.available).map(e=><label key={e.id} className={'extra-option '+(selected.includes(e.id)?'checked':'')}><span className="extra-left"><input type="checkbox" checked={selected.includes(e.id)} disabled={!selected.includes(e.id)&&selected.length>=product.max_extras} onChange={()=>toggle(e.id)}/>{e.name}</span><span>{e.price_cents?'+ '+money(e.price_cents):'Incluso'}</span></label>)}</div></div><div className="custom-buy"><div className="stepper"><button onClick={()=>setQty(q=>Math.max(1,q-1))} aria-label="Diminuir"><Minus size={17}/></button><strong>{qty}</strong><button onClick={()=>setQty(q=>Math.min(99,q+1))} aria-label="Aumentar"><Plus size={17}/></button></div><button className="btn grow" onClick={submit} disabled={!size}>Adicionar • {money(price)} <ArrowRight size={18}/></button></div></div></div></main><Footer/></>}
-export function CartPage(){const {cart,remove,updateQty,settings}=useStore();const subtotal=cart.reduce((s,x)=>s+calcItem(x),0);return <><Header back title="Meu carrinho"/><main className="container page"><h1 className="page-title">Seu pedido <span>💜</span></h1>{cart.length===0?<><Empty title="Seu carrinho está vazio" text="Escolha um açaí delicioso para começar."/><Link className="btn" to="/">Ver cardápio <ArrowRight size={17}/></Link></>:<div className="checkout-grid"><div className="cart-items">{cart.map(item=><article className="cart-item" key={item.key}><img src={item.image_url||'/images/acai-300.png'} alt=""/><div className="cart-detail"><h3>{item.name} <span>• {item.size_name}</span></h3><p>{item.extras.length?item.extras.map(e=>e.name).join(' · '):'Sem adicionais'}</p><strong>{money(calcItem(item))}</strong><div className="cart-actions"><div className="stepper small"><button onClick={()=>updateQty(item.key,item.qty-1)} aria-label="Diminuir"><Minus size={15}/></button><span>{item.qty}</span><button onClick={()=>updateQty(item.key,item.qty+1)} aria-label="Aumentar"><Plus size={15}/></button></div><button className="remove" aria-label="Remover item" onClick={()=>remove(item.key)}><Trash2 size={18}/></button></div></div></article>)}<Link to="/" className="text-link"><ArrowLeft size={16}/> Continuar comprando</Link></div><aside className="order-summary"><h3>Resumo do pedido</h3><div className="summary-line"><span>Subtotal</span><strong>{money(subtotal)}</strong></div><div className="summary-line"><span>Entrega</span><span>A calcular</span></div><div className="summary-line total"><span>Total parcial</span><strong>{money(subtotal)}</strong></div><p className="summary-hint">Taxa para entrega: {money(settings.delivery_fee_cents)}. Retirada sem taxa.</p><Link className="btn full" to="/finalizar">Finalizar pedido <ArrowRight size={18}/></Link></aside></div>}</main><Footer/></>}
+export function CartPage(){
+  const {cart,remove,updateQty,settings}=useStore();
+  const subtotal=cart.reduce((sum,item)=>sum+calcItem(item),0);
+  const itemCount=cart.reduce((sum,item)=>sum+item.qty,0);
+  const hasItems=cart.length>0;
+  return <>
+    <Header back title="Meu pedido"/>
+    <main className="container page cart-page">
+      <div className="cart-page-heading">
+        <div>
+          <span className="overline">BORA AÇAÍ • SEU CARRINHO</span>
+          <h1>Meu pedido</h1>
+          <p>{hasItems?`${itemCount} ${itemCount===1?'item selecionado':'itens selecionados'} para adoçar seu dia.`:'Tudo pronto para montar seu açaí favorito.'}</p>
+        </div>
+        {hasItems&&<Link to="/" className="text-link"><Plus size={17}/> Adicionar mais itens</Link>}
+      </div>
+      <div className="cart-page-grid">
+        <section className="cart-page-content" aria-label="Produtos do pedido">
+          {!hasItems?(
+            <div className="cart-empty-state">
+              <div className="cart-empty-icon"><ShoppingBag size={64} strokeWidth={1.5}/><span>💜</span></div>
+              <h2>Você ainda não adicionou nenhum açaí</h2>
+              <p>Escolha seu tamanho, adicione seus complementos favoritos e prepare um pedido delicioso.</p>
+              <Link to="/" className="btn">Explorar cardápio <ArrowRight size={18}/></Link>
+            </div>
+          ):(
+            <div className="cart-order-list">
+              <div className="cart-list-title"><h2>Itens do pedido</h2><span>{itemCount} ${itemCount===1?'item':'itens'}</span></div>
+              {cart.map(item=><article className="cart-item cart-page-item" key={item.key}>
+                <img src={item.image_url||'/images/acai-300.png'} alt={item.name}/>
+                <div className="cart-detail">
+                  <div className="cart-item-title">
+                    <h3>{item.name} <span>• {item.size_name}</span></h3>
+                    <strong>{money(calcItem(item))}</strong>
+                  </div>
+                  <p>{item.extras.length?item.extras.map(e=>e.name).join(' · '):'Sem adicionais'}</p>
+                  <div className="cart-actions">
+                    <div className="stepper small">
+                      <button type="button" onClick={()=>updateQty(item.key,item.qty-1)} aria-label="Diminuir quantidade"><Minus size={15}/></button>
+                      <span>{item.qty}</span>
+                      <button type="button" onClick={()=>updateQty(item.key,item.qty+1)} aria-label="Aumentar quantidade"><Plus size={15}/></button>
+                    </div>
+                    <button type="button" className="cart-remove-button" aria-label={`Remover ${item.name}`} onClick={()=>remove(item.key)}><Trash2 size={16}/> Remover</button>
+                  </div>
+                </div>
+              </article>)}
+              <Link to="/" className="text-link cart-continue-shopping"><ArrowLeft size={17}/> Continuar comprando</Link>
+            </div>
+          )}
+        </section>
+        <aside className="cart-page-side" aria-label="Resumo do pedido">
+          <Link className="cart-offers" to="/#cardapio">
+            <span className="cart-offers-icon">✦</span>
+            <span><strong>Nosso cardápio</strong><small>Confira as opções e monte seu açaí</small></span>
+            <ArrowRight size={19}/>
+          </Link>
+          <div className="cart-total-card">
+            <h2>Resumo do pedido</h2>
+            <div className="cart-summary-row"><span>Subtotal {hasItems?`(${itemCount} ${itemCount===1?'item':'itens'})`:''}</span><strong>{money(subtotal)}</strong></div>
+            <div className="cart-summary-row"><span>Entrega</span><span>A calcular</span></div>
+            <div className="cart-summary-divider"/>
+            <div className="cart-summary-total"><strong>Total parcial</strong><strong>{money(subtotal)}</strong></div>
+            <p className="cart-summary-note">A entrega custa {money(settings.delivery_fee_cents)}; retirando na loja, não há taxa. Você escolhe no próximo passo.</p>
+          </div>
+          {hasItems?(
+            <Link className="btn cart-next-button" to="/finalizar">Próximo <ArrowRight size={19}/></Link>
+          ):(
+            <button className="btn cart-next-button" type="button" disabled>Próximo <ArrowRight size={19}/></button>
+          )}
+          <p className="cart-next-hint">Revise seu pedido e depois informe os dados de entrega e pagamento.</p>
+        </aside>
+      </div>
+    </main>
+    <Footer/>
+  </>;
+}
+
 type Form={customer_name:string;phone:string;fulfillment:'delivery'|'pickup';address:string;number:string;complement:string;neighborhood:string;reference:string;payment_method:string;change_for:string;notes:string};
 const initial:Form={customer_name:'',phone:'',fulfillment:'delivery',address:'',number:'',complement:'',neighborhood:'',reference:'',payment_method:'pix',change_for:'',notes:''};
 export function Checkout(){const {cart,settings,clear,demo}=useStore();const [f,setF]=useState<Form>(initial);useEffect(()=>{if(!settings.delivery_enabled&&settings.pickup_enabled)setF(x=>({...x,fulfillment:'pickup'}))},[settings.delivery_enabled,settings.pickup_enabled]);const [busy,setBusy]=useState(false);const [error,setError]=useState('');const [saved,setSaved]=useState<{order_number:number;whatsapp_url:string}|null>(null);const nav=useNavigate();const token=useRef(crypto.randomUUID());const edit=(key:keyof Form,value:string)=>setF(s=>({...s,[key]:value}));const subtotal=cart.reduce((s,x)=>s+calcItem(x),0);const fee=f.fulfillment==='delivery'?settings.delivery_fee_cents:0;const total=subtotal+fee;
